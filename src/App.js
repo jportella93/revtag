@@ -21,7 +21,7 @@ const rythm = 10;
 
 const fullDivStyle = {
   width: '100vw',
-  height: '100vh',
+  height: '80vh',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center'
@@ -229,12 +229,18 @@ let hasStarted = false;
 function App() {
   const [viewNumber, setViewNumber] = useState(0);
   if (!hasStarted) {
-    setTimeout(() => setViewNumber(1), 2000);
+    setTimeout(() => setViewNumber(1), 3000);
     hasStarted = true;
   }
+
+  const retard = (fn, ms) => {
+    setTimeout(() => fn(), ms);
+  };
   const views = [
     <LoadingView onClick={() => setViewNumber(viewNumber + 1)} />,
-    <ImageScanView onClick={() => setViewNumber(viewNumber + 1)} />,
+    <ImageScanView
+      onClick={() => retard(() => setViewNumber(viewNumber + 1), 1000)}
+    />,
     <InfoView
       onClick={() => setViewNumber(viewNumber + 1)}
       onBack={() => setViewNumber(viewNumber - 1)}
