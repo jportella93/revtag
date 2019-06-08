@@ -1,14 +1,61 @@
-import React from 'react';
-import {Descriptions, Card, Icon, List, Avatar, Timeline} from 'antd';
+import React, {useState} from 'react';
+import {
+  Descriptions,
+  Card,
+  Icon,
+  List,
+  Avatar,
+  Timeline,
+  Typography,
+  Button
+} from 'antd';
 import './App.css';
 import cargoShip from './images/cargo-ship.svg';
 import truck from './images/truck.svg';
 import hand from './images/hand.svg';
+import logo from './images/logo.svg';
+import camera from './images/photo-camera.svg';
+const {Title} = Typography;
 
 const rythm = 10;
 
+const fullDivStyle = {
+  width: '100vw',
+  height: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+};
+
+const LoadingView = ({onClick}) => {
+  return (
+    <div style={fullDivStyle} onClick={onClick}>
+      <img src={logo} className="logo-animation" alt="Revtag logo" />
+    </div>
+  );
+};
+
+const ImageScanView = ({onClick}) => {
+  return (
+    <label
+      onClick={onClick}
+      style={{...fullDivStyle, flexDirection: 'column'}}
+      class="cameraButton">
+      <img src={camera} alt="Tap to scan" style={{width: '50vmin'}} />
+      <Title>Tap to scan</Title>
+
+      <input type="file" id="cameraInput" accept="image/*" capture />
+    </label>
+  );
+};
+
 const Credit = () => {
   const data = [
+    {
+      name: 'Shmashicons',
+      title: 'Shmashicons',
+      link: 'https://www.flaticon.com/authors/shmashicons'
+    },
     {
       name: 'monkik',
       title: 'monkik',
@@ -26,7 +73,7 @@ const Credit = () => {
     }
   ];
   return (
-    <div>
+    <div style={{textAlign: 'center'}}>
       Icons made by{' '}
       {data.map(d => (
         <a href={d.link} title={d.title}>
@@ -49,13 +96,7 @@ const Credit = () => {
   );
 };
 
-const InfoView = () => {
-  const lightStyle = {
-    fontWeight: 400
-  };
-  const boldStyle = {
-    fontWeight: 500
-  };
+const InfoView = ({onBack}) => {
   const cardStyle = {marginBottom: `${rythm * 2}px`};
 
   const elementStyle = {marginBottom: `${rythm}px`};
@@ -81,10 +122,17 @@ const InfoView = () => {
   ];
 
   return (
-    <>
+    <div style={{padding: '10px'}}>
+      <Button
+        type="normal"
+        style={{...elementStyle, border: 'none'}}
+        onClick={onBack}>
+        <Icon type="left" />
+        Go back
+      </Button>
       <Card style={cardStyle}>
         <Descriptions title="Factory" column="2">
-          <Descriptions.Item label="Owned by">Inditex</Descriptions.Item>
+          <Descriptions.Item label="Owned by">Pepita Flores</Descriptions.Item>
           <Descriptions.Item label="Workers">380 / 503</Descriptions.Item>
         </Descriptions>
         <Icon type="environment" /> Arteixio (Galicia)
@@ -155,7 +203,7 @@ const InfoView = () => {
             }}>
             <Avatar src={cargoShip} size="large" shape="square" />
             <p>
-              225 km <br /> 1 day and 2 hours
+              225 km <br /> 1 day and 1 hours
             </p>
           </div>
         </div>
@@ -172,17 +220,27 @@ const InfoView = () => {
           </Timeline.Item>
         </Timeline>
       </Card>
-    </>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <InfoView />
       <Credit />
     </div>
   );
+};
+
+let hasStarted = false;
+function App() {
+  const [viewNumber, setViewNumber] = useState(0);
+  if (!hasStarted) {
+    setTimeout(() => setViewNumber(1), 2000);
+    hasStarted = true;
+  }
+  const views = [
+    <LoadingView onClick={() => setViewNumber(viewNumber + 1)} />,
+    <ImageScanView onClick={() => setViewNumber(viewNumber + 1)} />,
+    <InfoView
+      onClick={() => setViewNumber(viewNumber + 1)}
+      onBack={() => setViewNumber(viewNumber - 1)}
+    />
+  ];
+  return <div className="App">{views[viewNumber]}</div>;
 }
 
 export default App;
